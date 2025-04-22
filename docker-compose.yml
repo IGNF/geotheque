@@ -45,3 +45,14 @@ services:
     volumes:
       - ./montages/images:/usr/share/nginx/html/:ro
       - ./montages/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+  reverse:
+    image: nginx
+    # restart: unless-stopped
+    userns_mode: "host"
+    network_mode: host
+    #ports:
+    #  - "8888:80"
+    volumes:
+      - ./montages/reverse.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./montages/proxy_params:/etc/nginx/proxy_params:ro
