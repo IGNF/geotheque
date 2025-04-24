@@ -52,7 +52,7 @@
           nameButton="XML"
           @click="downloadxml"
           :disabled="!storeSelectedScan"
-          tooltip="Télécharger le scan aux format XML"
+          tooltip="Télécharger la fiche du scan format XML"
         >
           <template #icon><SvgIcon type="mdi" :path="mdiXml" class="mdicon" /></template>
         </ShakingButton>
@@ -85,48 +85,62 @@ const textDisableOption = computed(() => {
 })
 
 /**
- * genère une URL d'image à partir des informations de la carte
- * @param info 
+ * genère le chemin du dossier de l'image / fiche XML à partir des informations de la carte
+ * @param info
  */
-function generateImageUrl(info) {
-  let name = ''
-  let url = ''
+function generateFolderPath(info) {
+  let path = ''
   if (info) {
-    const lieu = findSectionScan(info.collection)
-    if (info.sous_coll !== '') {
-      url = `${config.IMG_CARTE_URL}${lieu}/${info.collection}/${info.sous_coll}/${info.id_carte}.JP2`
-      name = info.id_carte
+    const section = findSectionScan(info.collection)
+    if (section && section != undefined) {
+      path += `/${section}/`
+    }
+    if (info.sous_coll !== '' && info.sous_coll != null) {
+      path += `${info.collection}/${info.sous_coll}`
     } else {
-      url = `${config.IMG_CARTE_URL}${lieu}/${info.collection}/${info.id_carte}.JP2`
-      name = info.sous_coll
+      path += `${info.collection}`
     }
   }
-  return { url, name }
+  return path
+}
+
+/**
+ * genère le chemin de l'image à partir des informations de la carte
+ * @param info
+ */
+function generateImagePath(info, ext='JP2') {
+  return generateFolderPath(info) + `/${info.id_carte}.${ext}`
+}
+
+/**
+ * genère une URL d'image à partir des informations de la carte
+ * @param info
+ */
+function generateImageUrl(info) {
+  const path = generateImagePath(info)
+  const url = config.IMG_CARTES_URL
+  return `${url}/${path}`
 }
 
 /**
  * génère une URL pour l'iipsrv à partir des informations de la carte
- * @param info 
+ * @param info
  */
 function getImageIppsrv(info) {
-  let url = ''
-  if (info) {
-    const lieu = findSectionScan(info.collection)
-    if (info.sous_coll !== '') {
-      url = `${config.IIPSRV_URL}/fcgi-bin/iipsrv.fcgi?FIF=${config.IIPSRV_PREFIX_CARTE}${lieu}/${info.collection}/${info.sous_coll}/${info.id_carte}.JP2&CVT=jpeg`
-    } else {
-      url = `${config.IIPSRV_URL}/fcgi-bin/iipsrv.fcgi?FIF=${config.IIPSRV_PREFIX_CARTE}${lieu}/${info.collection}/${info.id_carte}.JP2&CVT=jpeg`
-    }
-  }
+  const path = generateImagePath(info)
+  const url = `${config.IIPSRV_URL}/fcgi-bin/iipsrv.fcgi?FIF=${config.IIPSRV_PREFIX_CARTE}/${path}&CVT=jpeg`
   return url
 }
 
 watch(storeSelectedScan, (newVal) => {
   if (newVal) {
     const info = storeSelectedScan.value?.properties
-    imageUrl.value = getImageIppsrv(info)
+    if (info) {
+      imageUrl.value = getImageIppsrv(info)
+    }
   }
 })
+
 /**
  * ouvre l'image dans le visualiseur IIPMoo
  */
@@ -137,7 +151,7 @@ function openIipmooviewer() {
 
     localStorage.setItem('imageUrl', imageUrlServ)
     window.open(
-      `/geotheque/iipmooviewer/index.html?server=${config.IIPSRV_URL}&image=${encodeURIComponent(imageUrlServ)}`,
+      `/iipmooviewer/index.html?server=${config.IIPSRV_URL}&image=${encodeURIComponent(imageUrlServ)}`,
       '_blank',
     )
   } else {
@@ -151,25 +165,10 @@ function openIipmooviewer() {
 function downloadScans() {
   if (storeSelectedScan.value) {
     const info = storeSelectedScan.value?.properties
-    const { url, name } = generateImageUrl(info)
-
-    fetch(url)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', name)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(url)
-      })
-      .catch((error) => console.error('Erreur lors du téléchargement:', error))
+    const url = generateImageUrl(info)
+    window.open(url, 'img')
   }
 }
-
-let url_xml = ref(``)
 
 /**
  * Ouvre le fichier XML du scan dans une autre fenêtre
@@ -177,12 +176,8 @@ let url_xml = ref(``)
 function downloadxml() {
   if (storeSelectedScan.value) {
     const info = storeSelectedScan.value?.properties
-    const lieu = 'METROPOLE'
-    if (info.sous_coll !== '') {
-      url_xml = `${config.IMG_CARTE_URL}${lieu}/${info.collection}/${info.sous_coll}/Fiches/${info.id_carte}.xml`
-    } else {
-      url_xml = `${config.IMG_CARTE_URL}${lieu}/${info.collection}/Fiches/${info.id_carte}.xml`
-    }
+    const path = generateFolderPath(info)
+    const url_xml =  `${config.IMG_CARTES_URL}/${path}/Fiches/${info.id_carte}.xml`
     console.log('URL_XML : ', url_xml)
     window.open(url_xml, 'xml')
   }

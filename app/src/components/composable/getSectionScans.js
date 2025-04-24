@@ -5,56 +5,49 @@
  * @constant
  * @type {Object<string, string[]>}
  */
-const SECTION_SCANS = {
-  METROPOLE: [
-    'CADASTRE',
-    'CASSINI',
-    'DEPARTEMENTS',
-    'EM_CARTES',
-    'EM_MINUTES',
-    'FR_100K_A_200K',
-    'FR_10K_A_50K',
-    'FR_250K_A_600K',
-    'FR_2K_A_5K',
-    'FR_THEMATIQUE_GEN',
-    'FR_THEMATIQUE_LOC',
-    'PLANS_DE_VILLE',
-    'REGION_PARISIENNE',
-    'TOPO_DIVERS',
-    'URBANISME',
-  ],
-  AFRIQUE: [
-    'AEF_AOF_TOPOGRAPHIQUE',
-    'AFRIQUE_PAYS',
-    'ALGERIE_THEMATIQUE',
-    'ALGERIE_TOPOGRAPHIQUE',
-    'BENIN',
-    'CAMEROUN',
-    'COMORES_MAURICE',
-    'DJIBOUTI',
-    'HISTORIQUE',
-    'LEVANT',
-    'MADAGASCAR',
-    'MALI',
-    'MANUSCRITS',
-    'MAROC_TOPOGRAPHIQUE',
-    'REPUBLIQUE_CENTRAFRICAINE',
-    'SENEGAL',
-    'TCHAD',
-    'TOGO',
-  ],
-  EUROPE: ['BENELUX', 'GRECE', 'ITALIE'],
-  AUTRES: [
-    'AMERIQUE_CENTRALE',
-    'AMERIQUE_SUD',
-    'ANTARCTIQUE',
-    'DOM_COM',
-    'HISTORIQUE',
-    'INDOCHINE',
-    'INDOCHINE_TOPOGRAPHIQUE',
-    'LEVANT',
-    'MANUSCRITS',
-  ],
+const SECTIONS = {
+  'ALGERIE_TOPOGRAPHIQUE': 'AFRIQUE',
+  'BENELUX': 'EUROPE',
+  'MALI': 'AFRIQUE',
+  'GRECE': 'EUROPE',
+  'ITALIE': 'EUROPE',
+  'AMERIQUE_SUD': 'AMERIQUES',
+  'REPUBLIQUE_CENTRAFRICAINE': 'AFRIQUE',
+  'AMERIQUE_CENTRALE': 'AMERIQUES',
+  'SENEGAL': 'AFRIQUE',
+  'ANTARCTIQUE': 'POLES',
+  'MANUSCRITS': 'EUROPE',
+  'AEF_AOF_TOPOGRAPHIQUE': 'AFRIQUE',
+  'MAROC_TOPOGRAPHIQUE': 'AFRIQUE',
+  'ALGERIE_THEMATIQUE': 'AFRIQUE',
+  'BENIN': 'AFRIQUE',
+  'CAMEROUN': 'AFRIQUE',
+  'COMORES_MAURICE': 'AFRIQUE',
+  'DJIBOUTI': 'AFRIQUE',
+  'MADAGASCAR': 'AFRIQUE',
+  'AFRIQUE_PAYS': 'AFRIQUE',
+  'INDOCHINE_TOPOGRAPHIQUE': 'ASIE',
+  'INDOCHINE': 'ASIE',
+  'LEVANT': 'ASIE',
+  'DOM_COM': 'MONDE',
+  'HISTORIQUE': 'MONDE',
+  'CADASTRE': 'METROPOLE',
+  'CASSINI': 'METROPOLE',
+  'EM_CARTES': 'METROPOLE',
+  'EM_MINUTES': 'METROPOLE',
+  'FR_2K_A_5K': 'METROPOLE',
+  'FR_10K_A_50K': 'METROPOLE',
+  'FR_100K_A_200K': 'METROPOLE',
+  'FR_250K_A_600K': 'METROPOLE',
+  'DEPARTEMENTS' : 'METROPOLE',
+  'FR_THEMATIQUE_GEN': 'METROPOLE',
+  'FR_THEMATIQUE_LOC': 'METROPOLE',
+  'REGION_PARISIENNE': 'METROPOLE',
+  'URBANISME': 'METROPOLE',
+  'PLANS_DE_VILLE': 'METROPOLE',
+  'TOPO_DIVERS': 'METROPOLE',
+  'TOGO': 'AFRIQUE',
+  'TCHAD': 'AFRIQUE',
 }
 
 /**
@@ -65,10 +58,10 @@ const SECTION_SCANS = {
  *                   Retourne 'AUTRES' si la collection n'est pas trouvée dans les sections listées.
  */
 export const findSectionScan = (collection) => {
-  for (const [key, values] of Object.entries(SECTION_SCANS)) {
-    if (values.includes(collection)) {
-      return key
-    }
+  if (collection in SECTIONS) {
+    console.log(SECTIONS[collection])
+    return SECTIONS[collection]
   }
-  return 'AUTRES'
+  console.error(`La collection "${collection}" n'existe pas dans les sections définies.`)
+  return null;
 }
