@@ -37,7 +37,7 @@ export const layers_carto = [
 export const layers_carto_monde = [
   {
     id: 'osm',
-    name: 'osm',
+    name: 'OSM',
     thumbnail: osm,
   },
   {
@@ -85,7 +85,7 @@ export const layers_photo = [
   },
   {
     id: 'ortho1950',
-    name: 'ortho1950',
+    name: 'Ortho 1950',
     thumbnail: ortho1950,
   },
 ]
@@ -93,7 +93,7 @@ export const layers_photo = [
 export const layers_photo_monde = [
   {
     id: 'osm',
-    name: 'osm',
+    name: 'OSM',
     thumbnail: osm,
   },
   {
