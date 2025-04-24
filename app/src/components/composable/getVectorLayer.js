@@ -335,15 +335,23 @@ export const layersConfig = [
   {
     name: 'pays',
     url: `${config.GEOSERVER_URL}&request=GetFeature&typeNames=geotheque_mtd:monde_pays&outputFormat=application/json&bbox={bbox}&apikey=${config.APIKEY}`,
-    style: new Style({
-      stroke: new Stroke({
-        color: 'rgba(0, 0, 0, 0.5)',
-        width: 3,
-      }),
-      fill: new Fill({
-        color: 'rgba(0, 255, 0, 0.1)',
-      }),
-    }),
+    style: function (feature) {
+      return new Style({
+        stroke: new Stroke({
+          color: 'rgba(0, 0, 0, 0.5)',
+          width: 3,
+        }),
+        fill: new Fill({
+          color: 'rgba(0, 255, 0, 0.1)',
+        }),
+        text: new Text({
+          text: feature.get('nom'),
+          font: '16px Calibri,sans-serif',
+          fill: new Fill({ color: '#000' }),
+          stroke: new Stroke({ color: '#fff', width: 2 }),
+        }),
+      })
+    },
   },
   {
     name: 'france_zicad',
