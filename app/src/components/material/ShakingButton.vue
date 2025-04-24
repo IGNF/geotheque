@@ -69,6 +69,7 @@ onBeforeUnmount(() => {
 <template>
   <button
     ref="buttonRef"
+    class="button"
     :disabled="disabled"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
@@ -110,7 +111,11 @@ button {
 }
 
 button:hover:not(:disabled) {
-  animation: shake3856 0.3s linear infinite both;
+  background-color: #5e7a10;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 button:disabled {
@@ -118,33 +123,6 @@ button:disabled {
   cursor: not-allowed;
   animation: none;
   opacity: 0.7;
-}
-
-@keyframes shake3856 {
-  0% {
-    -webkit-transform: translate(0);
-    transform: translate(0);
-  }
-  20% {
-    -webkit-transform: translate(-2px, 2px);
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    -webkit-transform: translate(-2px, -2px);
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    -webkit-transform: translate(2px, 2px);
-    transform: translate(2px, 2px);
-  }
-  80% {
-    -webkit-transform: translate(2px, -2px);
-    transform: translate(2px, -2px);
-  }
-  100% {
-    -webkit-transform: translate(0);
-    transform: translate(0);
-  }
 }
 
 .shaking-tooltip {
