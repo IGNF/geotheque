@@ -151,7 +151,7 @@ function openIipmooviewer() {
 
     localStorage.setItem('imageUrl', imageUrlServ)
     window.open(
-      `/iipmooviewer/index.html?server=${config.IIPSRV_URL}&image=${encodeURIComponent(imageUrlServ)}`,
+      `iipmooviewer/index.html?server=${config.IIPSRV_URL}&image=${encodeURIComponent(imageUrlServ)}`,
       '_blank',
     )
   } else {
