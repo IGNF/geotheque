@@ -37,7 +37,7 @@ const props = defineProps({
   },
   territoryName: {
     type: String,
-    default: 'Metropole',
+    default: 'Hexagone',
   },
 })
 
@@ -50,7 +50,7 @@ const scanStore = useScanStore()
 const { activeTab } = storeToRefs(scanStore)
 
 watch(activeTab, (newVal) => {
-  selectedTerritory.value = newVal.includes('etranger') ? 'Monde' : 'Metropole'
+  selectedTerritory.value = newVal.includes('etranger') ? 'Monde' : 'Hexagone'
 })
 
 const emitChange = () => {

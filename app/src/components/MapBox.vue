@@ -120,10 +120,10 @@ const {
   selectedPhotos,
 } = storeToRefs(scanStore)
 
-const center = ref([territoires.Metropole.lon, territoires.Metropole.lat])
-const zoom = ref(territoires.Metropole.zoom)
+const center = ref([territoires.Hexagone.lon, territoires.Hexagone.lat])
+const zoom = ref(territoires.Hexagone.zoom)
 
-const territoryData = ref({ name: 'Metropole', lon: 0, lat: 0 })
+const territoryData = ref({ name: 'Hexagone', lon: 0, lat: 0 })
 
 const projection = ref('EPSG:3857')
 const rotation = ref(0)
@@ -218,7 +218,7 @@ watch(activeTab, (newValue) => {
 
   updateWMTSLayers(olMap.value, newLayers)
 
-  const name = activeTab.value.includes('etranger') ? 'Monde' : 'Metropole'
+  const name = activeTab.value.includes('etranger') ? 'Monde' : 'Hexagone'
 
   territoryData.value = {
     name: name,

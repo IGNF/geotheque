@@ -1,5 +1,5 @@
 export const territoires = {
-  Metropole: {
+  Hexagone: {
     lon: 427571,
     lat: 5903772,
     zoom: 6,
