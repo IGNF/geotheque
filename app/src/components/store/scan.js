@@ -339,12 +339,14 @@ export const useScanStore = defineStore('scan', () => {
         const response = await fetch(url)
         if (response.ok) {
           const data = await response.json()
-          storeScansData.value = data.features.map((feature, index) => ({
+          var list = data.features.map((feature, index) => ({
             id: index,
             geom: feature.geometry.coordinates,
             name: feature.properties.id_carte,
             properties: feature.properties,
           }))
+          list.sort((a,b) => a.name > b.name)
+          storeScansData.value = list
           storeSelectedScan.value = null
         } else {
           throw new Error('Failed to fetch data')
