@@ -335,25 +335,30 @@ export const useScanStore = defineStore('scan', () => {
     if (activeTab.value.includes('phototheque')) {
       await storeGetPhoto(url)
     } else {
-      try {
-        const response = await fetch(url)
-        if (response.ok) {
-          const data = await response.json()
-          var list = data.features.map((feature, index) => ({
-            id: index,
-            geom: feature.geometry.coordinates,
-            name: feature.properties.id_carte,
-            properties: feature.properties,
-          }))
-          list.sort((a,b) => a.name > b.name)
-          storeScansData.value = list
-          storeSelectedScan.value = null
-        } else {
-          throw new Error('Failed to fetch data')
-        }
-      } catch (error) {
-        console.error('Error:', error)
+      await storeGetScan(url)
+    }
+  }
+
+  async function storeGetScan(url) {
+    try {
+      const response = await fetch(url)
+      if (response.ok) {
+        const data = await response.json()
+        var list = data.features.map((feature, index) => ({
+          id: index,
+          geom: feature.geometry.coordinates,
+          name: feature.properties.id_carte,
+          properties: feature.properties,
+        }))
+        // On classe par ordresse croissant
+        list.sort((a, b) => a.name.localeCompare(b.name))
+        storeScansData.value = list
+        storeSelectedScan.value = null
+      } else {
+        throw new Error('Failed to fetch data')
       }
+    } catch (error) {
+      console.error('Error:', error)
     }
   }
 
@@ -363,7 +368,7 @@ export const useScanStore = defineStore('scan', () => {
       const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
-        storeScansData.value = data.features.map((feature, index) => {
+        var list = data.features.map((feature, index) => {
           feature.properties['echelle'] = getEchellePhoto(feature)
           const name = feature.properties.chantier + getSuffixPhoto(feature)
           return {
@@ -373,6 +378,9 @@ export const useScanStore = defineStore('scan', () => {
             properties: feature.properties,
           }
         })
+        // On classe par ordre décroissant
+        list.sort((a, b) => b.name.localeCompare(a.name))
+        storeScansData.value = list
         storeSelectedScan.value = null
       } else {
         throw new Error('Failed to fetch data')
