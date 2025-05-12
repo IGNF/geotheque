@@ -107,7 +107,7 @@
                 class="detail-item"
                 :style="{ 'animation-delay': `${index * 0.05}s` }"
               >
-                <div class="detail-label">{{ key }}</div>
+                <div class="detail-label">{{ formatLabel(key) }}</div>
                 <div class="detail-value">{{ val }}</div>
               </div>
             </div>
@@ -159,6 +159,13 @@ const {
   activeTab,
   currentPhotoInfo,
 } = storeToRefs(scanStore)
+
+function formatLabel(key) {
+  return key
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
 
 const selectedMission = computed(() => storeSelectedScan.value?.properties)
 const missionName = computed(() => storeSelectedScan.value?.name)
@@ -370,6 +377,18 @@ function clickedFlyTo() {
   gap: 10px;
   margin-left: 5px;
   margin-bottom: 20px;
+}
+
+
+.detail-label {
+  font-weight: bold;
+  color: #555;
+  flex-basis: 40%;
+}
+
+.detail-value {
+  flex-basis: 60%;
+  word-break: break-word;
 }
 
 .slide-in {
