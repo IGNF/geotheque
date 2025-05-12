@@ -63,6 +63,12 @@
   <script src="openseadragon/openseadragon.min.js"></script>
   <script src="https://github.com/usnistgov/OpenSeadragonFiltering/raw/refs/heads/master/openseadragon-filtering.js"></script>
   <script type="text/javascript">
+      const params = new URLSearchParams(window.location.search)
+      var image = params.get("image")
+      console.log(image)
+      if(image == null){
+        image = "/Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2"
+      }
       var viewer = OpenSeadragon({
           id: "openseadragon",
           prefixUrl: "openseadragon/images/",
@@ -70,7 +76,7 @@
           //prefixUrl: "http://localhost:8080/fcgi-bin/iipsrv.fcgi?DeepZoom=Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2",
           //tileSources: "http://localhost:8080/fcgi-bin/iipsrv.fcgi?IIIF=Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2/info.json"
           tileSources: [
-            "http://10.128.35.66:8080/fcgi-bin/iipsrv.fcgi?IIIF=/Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2/info.json",
+            "http://10.128.35.66:8080/fcgi-bin/iipsrv.fcgi?IIIF=" + image + "/info.json",
             //"http://10.128.35.66:8080/fcgi-bin/iipsrv.fcgi?IIIF=/Misphot_Image/Lambert93/2023/2023_FD 87_C_20/23FD8720x00040_01685.jp2/info.json"
           ],
           //showNavigator: true,
