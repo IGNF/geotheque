@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.jsdelivr.net/npm/tify@0.33.0/dist/tify.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tify@0.33.0/dist/tify.css">
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    #menu {
+      position: absolute;
+      padding: 20px;
+      width: 200px;
+      top: 50%;
+      left: 0;
+      transform: translate(0, -50%);
+      opacity: .05;
+      background-color: black;
+    }
+    #menu:hover {
+      opacity: 1;
+    }
+    #menu label {
+      color: white;
+      display: block;
+    }
+    #menu input {
+      display: block;
+      width: 100%;
+    }
+  </style>
+  <script type="module">
+
+  </script>
+</head>
+<body>
+  <div id="openseadragon" style="width: 100%; height: 100%;"></div>
+  <div id="menu">
+          <div>
+            <label for="rotation" for="rotationInput">Rotation (<span id="rotationLabel">0</span>):</label>
+            <input type="range" id="rotationInput" min="-180" max="180" value="0" />
+          </div>
+
+          <div>
+            <label for="brightness" for="brightnessInput">Luminosité (<span id="brightnessLabel">100</span>):</label>
+            <input type="range" id="brightnessInput" min="0" max="300" value="100"/>
+          </div>
+
+          <div>
+            <label for="brightness" for="contrastInput">Contraste (<span id="contrastLabel">100</span>):</label>
+            <input type="range" id="contrastInput" min="0" max="200" value="100"/>
+          </div>
+
+          <div style="text-align: center;padding-top:15px;">
+            <button id="resetButton">Reset</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  <script src="openseadragon/openseadragon.min.js"></script>
+  <script src="https://github.com/usnistgov/OpenSeadragonFiltering/raw/refs/heads/master/openseadragon-filtering.js"></script>
+  <script type="text/javascript">
+      const params = new URLSearchParams(window.location.search)
+      var image = params.get("image")
+      console.log(image)
+      if(image == null){
+        image = "/Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2"
+      }
+      var viewer = OpenSeadragon({
+          id: "openseadragon",
+          prefixUrl: "openseadragon/images/",
+          //prefixUrl: "http://localhost:8080/fcgi-bin/iipsrv.fcgi?FIF=Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2",
+          //prefixUrl: "http://localhost:8080/fcgi-bin/iipsrv.fcgi?DeepZoom=Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2",
+          //tileSources: "http://localhost:8080/fcgi-bin/iipsrv.fcgi?IIIF=Misphot_Image/Lambert93/2021/2021_FD%2001_C_20/21FD0120x00001_03343.jp2/info.json"
+          tileSources: [
+            "http://10.128.35.66:8080/fcgi-bin/iipsrv.fcgi?IIIF=" + image + "/info.json",
+            //"http://10.128.35.66:8080/fcgi-bin/iipsrv.fcgi?IIIF=/Misphot_Image/Lambert93/2023/2023_FD 87_C_20/23FD8720x00040_01685.jp2/info.json"
+          ],
+          //showNavigator: true,
+          //sequenceMode: true,
+          showReferenceStrip: true,
+          showRotationControl: true,
+          showFlipControl: true,
+          maxZoomPixelRatio: 1,
+      });
+      viewer.gestureSettingsMouse.clickToZoom = false
+      let brightnessValue = 100;
+      let contrastValue = 100;
+      // Rotation
+      const rotationInput = document.getElementById('rotationInput');
+      const rotationLabel = document.getElementById('rotationLabel');
+      rotationInput.addEventListener('input', function() {
+          const rotationValue = parseInt(rotationInput.value, 10);
+          rotationLabel.innerText = rotationValue;
+          viewer.viewport.setRotation(rotationValue);
+      });
+      viewer.addHandler('rotate', function(event) {
+        console.log(event);
+          let degrees = event.degrees;
+          while (degrees < -180) {
+              degrees += 360;
+          }
+          while (degrees > 180) {
+              degrees -= 360;
+          }
+          const rotationValue = Math.round(degrees);
+          rotationLabel.innerText = rotationValue;
+          rotationInput.value = rotationValue;
+      });
+      viewer.addHandler('canvas-click', function(target, info) {
+        const viewerZoom = viewer.viewport.getZoom();
+        // const imgWidth = viewer.world.getItemAt(0).getContentSize().x;
+        // image zoom = original image width / (viewport width * viewport zoom)
+          console.log(viewer.viewport.getZoom());
+          console.log(viewer.viewport.getMaxZoom());
+          console.log(viewer.viewport.getMinZoom());
+      });
+      // Brightness
+      const brightnessInput = document.getElementById('brightnessInput');
+      const brightnessLabel = document.getElementById('brightnessLabel');
+      brightnessInput.addEventListener('input', function() {
+          brightnessValue = parseInt(brightnessInput.value, 10);
+          brightnessLabel.innerText = brightnessValue;
+          viewer.canvas.style.filter = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
+      });
+      // Contrast
+      const contrastInput = document.getElementById('contrastInput');
+      const contrastLabel = document.getElementById('contrastLabel');
+      contrastInput.addEventListener('input', function() {
+          contrastValue = parseInt(contrastInput.value, 10);
+          contrastLabel.innerText = contrastValue;
+          viewer.canvas.style.filter = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
+      });
+      // Reset
+      const resetButton = document.getElementById('resetButton');
+      resetButton.addEventListener('click', function() {
+          rotationInput.value = 0;
+          rotationLabel.innerText = 0;
+          brightnessInput.value = 100;
+          brightnessLabel.innerText = 100;
+          contrastInput.value = 100;
+          contrastLabel.innerText = 100;
+          viewer.viewport.setRotation(0);
+          viewer.canvas.style.filter = `brightness(100%) contrast(100%)`;
+      });
+  </script>
+</body>
+</html>
