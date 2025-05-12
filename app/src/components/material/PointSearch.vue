@@ -8,7 +8,7 @@
         @click="searchMode = 'map'"
       >
         <SvgIcon :path="mdiMapMarker" type="mdi" class="mdi" />
-        Recherche sur la carte
+        Recherche par clic
       </button>
       <button
         :class="['mode-button', { active: searchMode === 'coords' }]"
@@ -47,7 +47,7 @@
     </div>
 
     <div v-if="searchMode === 'map'">
-      <Accordeon title="Recherche sur la carte" defaultOpen>
+      <Accordeon title="Recherche par clic" defaultOpen>
         <div class="map-search-instructions">
           <SvgIcon :path="mdiInformationOutline" type="mdi" class="mdi" />
           <p>Cliquez sur la carte pour sélectionner un point.</p>
