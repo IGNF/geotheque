@@ -112,7 +112,7 @@ function searchCommunes() {
   }
 
   const query = searchCommune.value.toUpperCase().trim()
-
+  console.log("je suis la " + query)
   if (!query) {
     communeResults.value = []
     return
@@ -132,6 +132,8 @@ function searchCommunes() {
     fetch(search_url)
       .then((response) => response.json())
       .then((data) => {
+        //On trie par population
+        data.features.sort((a,b) => a.properties.population < b.properties.population)
         const newResults = data.features.map((commune) => ({
           nom: commune.properties.nom_com,
           code: commune.properties.insee_com,
